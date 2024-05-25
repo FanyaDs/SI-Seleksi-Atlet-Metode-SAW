@@ -132,6 +132,7 @@
                                                         <option value="Bisnis Digital"
                                                             {{ $items->jurusan == "Bisnis Digital" ? 'selected' : '' }}>
                                                             Bisnis Digital</option>
+
                                                     </select>
                                                 </div>
                                                 <div class="form-group">

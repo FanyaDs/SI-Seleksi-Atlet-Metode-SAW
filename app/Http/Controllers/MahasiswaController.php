@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\mahasiswa;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator; // Menggunakan Validator untuk melakukan validasi data.
+use RealRashid\SweetAlert\Facades\Alert; // Menggunakan SweetAlert untuk menampilkan alert.
 
 class MahasiswaController extends Controller
 {
@@ -14,9 +14,10 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        // mengambil semua data dari table user
+        // Mengambil semua data dari tabel mahasiswa.
         $data = mahasiswa::all();
 
+        // Mengembalikan view 'pages.mahasiswa.index' dengan data mahasiswa.
         return view('pages.mahasiswa.index', ['data' => $data]);
     }
 
@@ -25,7 +26,7 @@ class MahasiswaController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -33,7 +34,7 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        // validasi $request
+        // Melakukan validasi terhadap data yang diterima dari formulir.
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
             'jurusan' => 'required',
@@ -44,13 +45,15 @@ class MahasiswaController extends Controller
             'alamat' => 'nullable',
             'agama' => 'nullable',
         ]);
-        // jika validasi terdapat bernilai false maka dikembalikan ke halaman user dan menampilkan alert toast
+
+        // Jika validasi gagal, kembali ke halaman sebelumnya dan tampilkan alert error.
         if ($validator->fails()) {
             $msg = $validator->messages()->all();
             Alert::toast($msg, 'error');
             return back();
         }
-        // proses menambahkan data baru ke database
+
+        // Proses menambahkan data baru ke database.
         $data = new mahasiswa([
             'nama' => $request->nama,
             'jurusan' => $request->jurusan,
@@ -62,9 +65,11 @@ class MahasiswaController extends Controller
             'agama' => $request->agama,
         ]);
         $data->save();
-        // alert succes ketika menambahkan data berhasil
+
+        // Menampilkan alert success ketika menambahkan data berhasil.
         Alert::success('Success!', 'Mahasiswa Created Successfully');
-        // kembali ke halaman mahasiswa
+
+        // Kembali ke halaman sebelumnya.
         return redirect()->back();
     }
 
@@ -73,7 +78,7 @@ class MahasiswaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
@@ -81,7 +86,7 @@ class MahasiswaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
     }
 
     /**
@@ -89,7 +94,7 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // validasi $request
+        // Melakukan validasi terhadap data yang diterima dari formulir.
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
             'jurusan' => 'required',
@@ -100,14 +105,15 @@ class MahasiswaController extends Controller
             'alamat' => 'nullable',
             'agama' => 'nullable',
         ]);
-        // jika validasi terdapat bernilai false maka dikembalikan ke halaman user dan menampilkan alert toast
+
+        // Jika validasi gagal, kembali ke halaman sebelumnya dan tampilkan alert error.
         if ($validator->fails()) {
             $msg = $validator->messages()->all();
             Alert::toast($msg, 'error');
             return back();
         }
 
-        // proses update data
+        // Proses update data mahasiswa.
         mahasiswa::find($request->id)->update([
             'nama' => $request->nama,
             'jurusan' => $request->jurusan,
@@ -119,7 +125,10 @@ class MahasiswaController extends Controller
             'agama' => $request->agama
         ]);
 
+        // Menampilkan alert success ketika data berhasil diperbarui.
         Alert::toast('Updated Successfully', 'success');
+
+        // Kembali ke halaman sebelumnya.
         return redirect()->back();
     }
 
@@ -128,8 +137,13 @@ class MahasiswaController extends Controller
      */
     public function destroy(string $id)
     {
+        // Menghapus data mahasiswa berdasarkan ID.
         mahasiswa::find($id)->delete();
+
+        // Menampilkan alert success ketika data berhasil dihapus.
         alert()->success('Success!', 'Deleted Successfully');
+
+        // Kembali ke halaman daftar mahasiswa.
         return redirect()->route('mahasiswa.index');
     }
 }

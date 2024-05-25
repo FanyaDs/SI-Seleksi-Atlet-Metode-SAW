@@ -11,77 +11,95 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthController extends Controller
 {
+    // Menampilkan halaman login
     public function index()
     {
         return view('auth.login');
     }
 
+    // Menangani permintaan login
     public function login(Request $request)
     {
-        //validasi request
+        // Validasi data permintaan
         $validator = Validator::make($request->all(), [
             'username' => 'required',
             'password' => 'required',
         ]);
-        // jika validasi terdapat bernilai false maka dikembalikan ke halaman login dan menampilkan alert toast
+
+        // Jika validasi gagal, kembali ke halaman login dengan pesan error
         if ($validator->fails()) {
             $msg = $validator->messages()->all();
             Alert::toast($msg, 'error');
             return back();
         }
 
+        // Mengambil data user berdasarkan username
         $data = User::where('username', $request->username)->first();
 
         if ($data) {
+            // Memeriksa apakah password yang diberikan sesuai dengan password yang tersimpan (hash)
             if (Hash::check($request->password, $data->password)) {
-                Log::info('Password is correct');
+                Log::info('Password benar');
+                // Regenerasi session ID untuk mencegah serangan session fixation
                 $request->session()->regenerate();
+                // Menyimpan informasi user dalam session
                 $request->session()->put('user', [
                     'username' => $data->username,
                     'role' => $data->role,
                 ]);
+                // Mengarahkan ke dashboard
                 return redirect(route('dashboard'));
             } else {
-                Log::info('Password is incorrect');
+                // Mencatat percobaan password yang salah dan menampilkan pesan error
+                Log::info('Password salah');
                 Alert::toast('Password Anda Salah', 'error');
                 return back();
             }
         } else {
-            Log::info('Username not found');
+            // Mencatat percobaan username yang tidak ditemukan dan menampilkan pesan error
+            Log::info('Username tidak ditemukan');
             Alert::toast('Username Tidak Ditemukan', 'error');
             return back();
         }
     }
 
+    // Menangani permintaan registrasi
     public function register(Request $request)
     {
-        // validasi $request
+        // Validasi data permintaan
         $validator = Validator::make($request->all(), [
             'username' => 'required',
             'password' => 'required',
         ]);
-        // jika validasi terdapat bernilai false maka dikembalikan ke halaman user dan menampilkan alert toast
+
+        // Jika validasi gagal, kembali ke halaman registrasi dengan pesan error
         if ($validator->fails()) {
             $msg = $validator->messages()->all();
             Alert::toast($msg, 'error');
             return back();
         }
-        // proses menambahkan data baru ke database
+
+        // Membuat instance user baru dan menyimpannya ke database
         $user = new User([
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'role' => 'Admin'
         ]);
         $user->save();
-        // alert succes ketika menambahkan data berhasil
+
+        // Menampilkan pesan sukses setelah registrasi berhasil
         Alert::success('Success!', 'Register Successfully');
-        // kembali ke halaman user
+
+        // Mengarahkan ke halaman login
         return redirect()->route('auth.index');
     }
 
+    // Menangani permintaan logout
     public function logout()
     {
+        // Menginvaliasi session yang sedang berjalan
         session()->invalidate();
+        // Mengarahkan ke halaman utama
         return redirect('/');
     }
 }

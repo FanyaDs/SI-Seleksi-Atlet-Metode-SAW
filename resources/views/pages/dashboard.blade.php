@@ -13,8 +13,8 @@
                         </div>
                         <div class="col-7 col-md-8">
                             <div class="numbers">
-                                <p class="card-category">Capacity</p>
-                                <p class="card-title">150GB
+                                <p class="card-category">Kapasitas Atlet</p>
+                                <p class="card-title">150
                                 <p>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-7 col-md-8">
                             <div class="numbers">
-                                <p class="card-category">Errors</p>
+                                <p class="card-category">Cedera</p>
                                 <p class="card-title">23
                                 <p>
                             </div>
